@@ -1,24 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Shop.API.Model;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Shop.API.Models;
 
 namespace Shop.API.Controllers
 {
     public class ProductController : Controller
     {
         private readonly IProductRepository _productRepository;
-
-        public ProductController(MockProductRepository productRepository)
+        public ProductController(IProductRepository productRepository)
         {
             _productRepository = productRepository;
         }
 
         public IActionResult Index()
+        {            
+            return View(_productRepository.GetAllProducts());
+        }
+
+        public IActionResult Details(int Id)
         {
-            return View();
+            return View(_productRepository.GetProductById(Id));
         }
     }
 }

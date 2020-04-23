@@ -21,5 +21,16 @@ namespace Shop.API.Controllers
         {
             return View(_productRepository.GetProductById(Id));
         }
+
+        public IActionResult Delete(int Id)
+        {
+            Product ProductFound = _productRepository.GetProductById(Id);
+            if (ProductFound != null)
+            {
+                _productRepository.DeleteProduct(ProductFound);
+                return View();
+            }
+            return NotFound();
+        }
     }
 }

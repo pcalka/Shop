@@ -6,5 +6,7 @@ namespace Shop.API.Models
     {
         IEnumerable<Product> GetAllProducts();
         Product GetProductById(int Id);
+        void DeleteProduct(Product product);
+        void AddProduct(Product product);
     }
 }

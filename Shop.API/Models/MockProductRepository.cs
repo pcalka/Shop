@@ -34,5 +34,15 @@ namespace Shop.API.Models
         {
             return _productsList.Find(p => p.Id == Id);
         }
+
+        public void AddProduct(Product product)
+        {
+            _productsList.Add(product);
+        }
+
+        public void DeleteProduct(Product product)
+        {
+            _productsList.Remove(product);
+        }
     }   
 }

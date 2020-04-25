@@ -4,8 +4,8 @@ namespace Shop.API.Models
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions options):base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options):base(options)
         { }
-        DbSet<Product> Products { get; set; }
+        public DbSet<Product> Products { get; set; }
     }
 }

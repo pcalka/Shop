@@ -4,9 +4,10 @@ namespace Shop.API.Models
 {
     public interface IProductRepository
     {
-        IEnumerable<Product> GetAllProducts();
-        Product GetProductById(int Id);
-        void DeleteProduct(Product product);
         void AddProduct(Product product);
+        void DeleteProduct(Product product);
+        void EditProduct(int id, Product product);
+        IEnumerable<Product> GetAllProducts();
+        Product GetProductById(int Id);       
     }
 }

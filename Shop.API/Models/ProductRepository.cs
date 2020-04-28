@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Shop.API.Models
 {
@@ -16,11 +13,13 @@ namespace Shop.API.Models
         public void AddProduct(Product product)
         {
             _context.Products.Add(product);
+            _context.SaveChanges();
         }
 
         public void DeleteProduct(Product product)
         {
             _context.Products.Remove(product);
+            _context.SaveChanges();
         }
 
         public IEnumerable<Product> GetAllProducts()
@@ -32,6 +31,13 @@ namespace Shop.API.Models
         {
             var ProductFound = _context.Products.Find(id);
             return ProductFound;
+        }
+
+        public void EditProduct(int id, Product product)
+        {
+            Product ProductFound = GetProductById(id);
+            ProductFound = product;
+            _context.SaveChanges();
         }
     }
 }

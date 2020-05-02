@@ -33,10 +33,9 @@ namespace Shop.API.Models
             return ProductFound;
         }
 
-        public void EditProduct(int id, Product product)
+        public void EditProduct(Product product)
         {
-            Product ProductFound = GetProductById(id);
-            ProductFound = product;
+            _context.Products.Update(product);
             _context.SaveChanges();
         }
     }

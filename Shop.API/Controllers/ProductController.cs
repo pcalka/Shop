@@ -11,15 +11,26 @@ namespace Shop.API.Controllers
             _productRepository = productRepository;
         }
 
-        public IActionResult Index()
-        {          
-             return View(_productRepository.GetAllProducts());           
+        public IActionResult Create()
+        {
+            return View();
         }
 
 
-        public IActionResult Details(int Id)
+        [HttpPost]
+        public IActionResult Create(Product product)
         {
-            Product ProductFound = _productRepository.GetProductById(Id);
+            if (ModelState.IsValid)
+            {
+                _productRepository.AddProduct(product);
+                return RedirectToAction("Index");
+            }
+            return View(product);
+        }
+      
+        public IActionResult Details(int id)
+        {
+            Product ProductFound = _productRepository.GetProductById(id);
             if (ModelState.IsValid)
             {
                 return View(ProductFound);
@@ -27,9 +38,9 @@ namespace Shop.API.Controllers
             return NotFound();
         }
 
-        public IActionResult Delete(int Id)
+        public IActionResult Delete(int id)
         {
-            Product ProductFound = _productRepository.GetProductById(Id);
+            Product ProductFound = _productRepository.GetProductById(id);
             if (ProductFound == null)
             return NotFound();
             
@@ -38,28 +49,35 @@ namespace Shop.API.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmDelete(int Id)
+        public IActionResult ConfirmDelete(int id)
         {             
-           Product product = _productRepository.GetProductById(Id);
+           Product product = _productRepository.GetProductById(id);
            _productRepository.DeleteProduct(product);
            return RedirectToAction(nameof(Index));       
         }
-        
-        public IActionResult Create()
+
+        public IActionResult Edit(int id)
         {
-            return View();
+            Product product = _productRepository.GetProductById(id);
+            if (product == null) NotFound();
+            return View(product);
         }
 
-        
         [HttpPost]
-        public IActionResult Create(Product product)
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Product product)
         {
             if (ModelState.IsValid)
             {
-                _productRepository.AddProduct(product);                     
+                _productRepository.EditProduct(product);
                 return RedirectToAction("Index");
             }
-            return View(product);
+            else return View(product);
+        }
+
+        public IActionResult Index()
+        {
+            return View(_productRepository.GetAllProducts());
         }
     }
 }

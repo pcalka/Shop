@@ -30,14 +30,21 @@ namespace Shop.API.Controllers
         public IActionResult Delete(int Id)
         {
             Product ProductFound = _productRepository.GetProductById(Id);
-            if (ModelState.IsValid)
-            {
-                _productRepository.DeleteProduct(ProductFound);
-                return View("Index");
-            }
+            if (ProductFound == null)
             return NotFound();
+            
+            return View(ProductFound);
         }
 
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult ConfirmDelete(int Id)
+        {             
+           Product product = _productRepository.GetProductById(Id);
+           _productRepository.DeleteProduct(product);
+           return RedirectToAction(nameof(Index));       
+        }
+        
         public IActionResult Create()
         {
             return View();

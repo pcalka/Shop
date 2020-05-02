@@ -2,11 +2,33 @@
 
 
 <h1>List products</h1>
-    <ul>
-        @foreach (var item in Model)
+<table class="table" style="background-color:azure">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            
+            <th>
+                <a asp-action="Create" class="btn btn-danger btn-sm">Create new Product</a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Product prodcut in Model)
         {
-            <li>
-                <a asp-controller="Product" asp-action="Details" asp-route-Id="@item.Id">@item.Name</a>
-            </li>
+            <tr>
+                <td>@Html.DisplayFor(modelItem => prodcut.Name)</td>
+                <td>@Html.DisplayFor(modelItem => prodcut.Price)</td>
+                
+                <td>
+                    <a asp-action="Details" asp-route-Id="@prodcut.Id"
+                       class="btn btn-success btn-sm" style="margin-bottom:3px">Details</a>
+                    <a asp-action="Edit" asp-route-Id="@prodcut.Id"
+                       class="btn btn-success btn-sm" style="margin-bottom:3px">Edit</a>
+                    <a asp-action="Delete" asp-route-Id="@prodcut.Id"
+                       class="btn btn-success btn-sm" style="margin-bottom:3px">Delete</a>
+                </td>
+            </tr>
         }
-    </ul> 
+    </tbody>
+</table>

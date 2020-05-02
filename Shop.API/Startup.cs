@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Shop.API.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Shop.API
 {
@@ -22,6 +23,8 @@ namespace Shop.API
         {
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
                 Configuration.GetConnectionString("DefaultConnection")));
+            services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddTransient<IProductRepository, ProductRepository>();
@@ -29,17 +32,10 @@ namespace Shop.API
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-            }
-
+        {          
+            app.UseDeveloperExceptionPage();
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseRouting();            
             app.UseEndpoints(endpoints =>
             {

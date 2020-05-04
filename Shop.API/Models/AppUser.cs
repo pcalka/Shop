@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Shop.API.Models
 {
-    public class User : IdentityUser
+    public class AppUser : IdentityUser
     {
         [Required]
         public string Name { get; set; }

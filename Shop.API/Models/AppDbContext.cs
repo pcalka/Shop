@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Shop.API.Models
 {
-    public class AppDbContext : IdentityDbContext<User>
+    public class AppDbContext : IdentityDbContext<AppUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options):base(options) {}
         public DbSet<Product> Products { get; set; }

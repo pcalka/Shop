@@ -15,7 +15,7 @@ namespace Shop.API.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            return View(_userManager.Users);
         }
 
         public async Task<IActionResult> Create(AppUser user)

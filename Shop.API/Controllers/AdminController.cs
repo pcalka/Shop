@@ -17,6 +17,7 @@ namespace Shop.API.Controllers
             _passwordHasher = passwordHash;
         }       
 
+        [HttpPost]
         public async Task<IActionResult> Create(User user)
         {
             if (ModelState.IsValid)
@@ -66,7 +67,7 @@ namespace Shop.API.Controllers
             {
                 return View(user);
             }
-            return NotFound();
+            else return RedirectToAction("Index");
         }
 
         [HttpPost]
@@ -74,8 +75,7 @@ namespace Shop.API.Controllers
         {
             AppUser user = await _userManager.FindByIdAsync(id);
             if (user != null)
-            {
-                IdentityResult result = await _userManager.UpdateAsync(user);
+            {               
                 if (!string.IsNullOrEmpty(email))
                     user.Email = email;
                 else ModelState.AddModelError(" ", "Email can't be empty");
@@ -85,10 +85,11 @@ namespace Shop.API.Controllers
                 else ModelState.AddModelError(" ", "Password can't be empty");
                 if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password))
                 {
+                    IdentityResult result = await _userManager.UpdateAsync(user);
                     if (result.Succeeded)
                         return RedirectToAction("Index");
-                }
-                else Errors(result);
+                    else Errors(result);
+                }               
             }
             else ModelState.AddModelError(" ", "User not found");
             return View(user);

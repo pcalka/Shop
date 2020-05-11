@@ -15,11 +15,7 @@ namespace Shop.API.Controllers
         {
             _userManager = userManager;
             _passwordHasher = passwordHash;
-        }
-        public IActionResult Index()
-        {
-            return View(_userManager.Users);
-        }
+        }       
 
         public async Task<IActionResult> Create(User user)
         {
@@ -43,7 +39,27 @@ namespace Shop.API.Controllers
             return View(user);
         }
 
-        public async Task<IActionResult> Upadate(string id)
+        public async Task<IActionResult> Delete(string id)
+        {
+            AppUser user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                IdentityResult result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                    return RedirectToAction("Index");
+                else Errors(result);
+            }
+            else
+                ModelState.AddModelError(" ", "User not found");
+            return View("Index", _userManager.Users);
+        }
+       
+        public IActionResult Index()
+        {
+            return View(_userManager.Users);
+        }
+
+        public async Task<IActionResult> Update(string id)
         {
             AppUser user = await _userManager.FindByIdAsync(id);
             if (user != null) 
@@ -53,6 +69,7 @@ namespace Shop.API.Controllers
             return NotFound();
         }
 
+        [HttpPost]
         public async Task<IActionResult> Update(string id, string email, string password)
         {
             AppUser user = await _userManager.FindByIdAsync(id);
@@ -75,21 +92,6 @@ namespace Shop.API.Controllers
             }
             else ModelState.AddModelError(" ", "User not found");
             return View(user);
-        }
-
-        public async Task<IActionResult> Delete(string id)
-        {
-            AppUser user = await _userManager.FindByIdAsync(id);
-            if (user != null)
-            {
-                IdentityResult result = await _userManager.DeleteAsync(user);
-                if (result.Succeeded)
-                    return RedirectToAction("Index");
-                else Errors(result);
-            }
-            else
-            ModelState.AddModelError(" ", "User not found");
-            return View("Index", _userManager.Users);
         }
 
         private void Errors(IdentityResult result)

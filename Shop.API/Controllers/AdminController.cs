@@ -21,7 +21,7 @@ namespace Shop.API.Controllers
             return View(_userManager.Users);
         }
 
-        public async Task<IActionResult> Create(AppUser user)
+        public async Task<IActionResult> Create(User user)
         {
             if (ModelState.IsValid)
             {
@@ -59,11 +59,11 @@ namespace Shop.API.Controllers
             if (user != null)
             {
                 IdentityResult result = await _userManager.UpdateAsync(user);
-                if (!string.IsNullOrEmpty(user.Email))
+                if (!string.IsNullOrEmpty(email))
                     user.Email = email;
                 else ModelState.AddModelError(" ", "Email can't be empty");
 
-                if (!string.IsNullOrEmpty(user.Password))
+                if (!string.IsNullOrEmpty(password))
                     user.PasswordHash = _passwordHasher.HashPassword(user, password);
                 else ModelState.AddModelError(" ", "Password can't be empty");
                 if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password))

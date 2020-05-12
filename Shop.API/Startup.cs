@@ -23,7 +23,15 @@ namespace Shop.API
         {
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
                 Configuration.GetConnectionString("DefaultConnection")));
-            services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>()
+            services.AddIdentity<AppUser, IdentityRole>( opts =>
+                {
+                    opts.Password.RequiredLength = 8;
+                    opts.Password.RequireDigit = true;
+                    opts.Password.RequireNonAlphanumeric = true;
+                    opts.Password.RequireUppercase = true;
+                    opts.Password.RequireLowercase = true;
+                }
+                ).AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
             services.AddControllersWithViews();
             services.AddRazorPages();

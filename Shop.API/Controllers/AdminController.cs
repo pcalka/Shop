@@ -15,7 +15,9 @@ namespace Shop.API.Controllers
         {
             _userManager = userManager;
             _passwordHasher = passwordHash;
-        }       
+        }
+
+        public ViewResult Create() => View();
 
         [HttpPost]
         public async Task<IActionResult> Create(User user)

@@ -30,6 +30,9 @@ namespace Shop.API
                     opts.Password.RequireNonAlphanumeric = true;
                     opts.Password.RequireUppercase = true;
                     opts.Password.RequireLowercase = true;
+                    opts.User.RequireUniqueEmail = true;
+                    opts.User.AllowedUserNameCharacters = 
+                    "abcdefghijklmnopqrstuvwxyz1234567890";
                 }
                 ).AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();

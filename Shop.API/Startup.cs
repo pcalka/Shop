@@ -38,6 +38,7 @@ namespace Shop.API
                 }
                 ).AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
+            services.ConfigureApplicationCookie(opts => opts.LoginPath = "/Authenticate/Login");
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddTransient<IProductRepository, ProductRepository>();

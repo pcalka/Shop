@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Shop.API.Models.IdentityPolicy
 {
-    public class CustomerUserNamePolicy : UserValidator<AppUser>
+    public class CustomerUserEmialPolicy : UserValidator<AppUser>
     {
         public override async Task<IdentityResult> ValidateAsync
             (UserManager<AppUser> userManager, AppUser user)

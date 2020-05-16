@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Shop.API.Models;
 using Microsoft.AspNetCore.Identity;
+using Shop.API.Models.IdentityPolicy;
 
 namespace Shop.API
 {
@@ -20,6 +21,8 @@ namespace Shop.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IPasswordValidator<AppUser>, CustomPasswordPolicy>();
+            services.AddTransient<IUserValidator<AppUser>, CustomerUserEmialPolicy>();
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
                 Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<AppUser, IdentityRole>( opts =>
@@ -30,8 +33,8 @@ namespace Shop.API
                     opts.Password.RequireUppercase = true;
                     opts.Password.RequireLowercase = true;
                     opts.User.RequireUniqueEmail = true;
-                    opts.User.AllowedUserNameCharacters = 
-                    "abcdefghijklmnopqrstuvwxyz1234567890";
+                    opts.User.AllowedUserNameCharacters = "aAbBcCdDeEfFgGhHiIj"
+                    +"JkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ1234567890";                    
                 }
                 ).AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();

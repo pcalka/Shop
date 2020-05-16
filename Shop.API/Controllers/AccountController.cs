@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shop.API.Models;
+using System.Threading.Tasks;
 
 namespace Shop.API.Controllers
 {
@@ -20,11 +21,33 @@ namespace Shop.API.Controllers
         {
             return View();
         }
-
+        
+        [AllowAnonymous]
         public IActionResult Login(string returnUrl)
         {
-            Login login = new Login();
-            login.ReturnUrl = returnUrl;
+            Login Login = new Login();
+            Login.ReturnUrl = returnUrl;
+            return View(Login);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(Login login)
+        {
+            if (ModelState.IsValid)
+            {
+                AppUser User = await _userManager.FindByEmailAsync(login.Email);
+                if (User != null)
+                {
+                    await _signInManager.SignOutAsync();
+                    Microsoft.AspNetCore.Identity.SignInResult result = 
+                    await _signInManager.PasswordSignInAsync(User, login.Password, false, false);
+                    if (result.Succeeded)
+                        return Redirect(login.ReturnUrl ?? "/");
+                }
+                ModelState.AddModelError(nameof(login.Email), "Login failed: Invalid eamail or password ");
+            }
             return View(login);
         }
     }

@@ -9,12 +9,16 @@ namespace Shop.API.Controllers
     {
         private UserManager<AppUser> _userManager;
         private IPasswordHasher<AppUser> _passwordHasher;
+        private IPasswordValidator<AppUser> _passwordValidator;
+        private IUserValidator<AppUser> _emailValidator;
 
         public AdminController(UserManager<AppUser> userManager,
-            IPasswordHasher<AppUser> passwordHash)
+            IPasswordHasher<AppUser> passwordHash, IPasswordValidator<AppUser> passwordValidator, IUserValidator<AppUser> emailValidator)
         {
             _userManager = userManager;
             _passwordHasher = passwordHash;
+            _passwordValidator = passwordValidator;
+            _emailValidator = emailValidator;
         }
 
         public ViewResult Create() => View();
@@ -24,16 +28,21 @@ namespace Shop.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                AppUser newUser = new AppUser
+                AppUser NewUser = new AppUser();
+                if (!string.IsNullOrEmpty(user.Name))
                 {
-                    UserName = user.Name,
-                    Email = user.Email
-                };
-                IdentityResult result = await _userManager.CreateAsync(newUser, user.Password);
-                if (result.Succeeded) return RedirectToAction("Index");
+                    NewUser.UserName = user.Name;
+                }
+                if (!string.IsNullOrEmpty(user.Email))
+                {
+                    NewUser.Email = user.Email;
+                }
+               
+                IdentityResult Result = await _userManager.CreateAsync(NewUser, user.Password);
+                if (Result.Succeeded) return RedirectToAction("Index");
                 else
                 {
-                    foreach (var error in result.Errors)
+                    foreach (var error in Result.Errors)
                     {
                         ModelState.AddModelError(" ", error.Description);
                     }
@@ -44,13 +53,13 @@ namespace Shop.API.Controllers
 
         public async Task<IActionResult> Delete(string id)
         {
-            AppUser user = await _userManager.FindByIdAsync(id);
-            if (user != null)
+            AppUser User = await _userManager.FindByIdAsync(id);
+            if (User != null)
             {
-                IdentityResult result = await _userManager.DeleteAsync(user);
-                if (result.Succeeded)
+                IdentityResult Result = await _userManager.DeleteAsync(User);
+                if (Result.Succeeded)
                     return RedirectToAction("Index");
-                else Errors(result);
+                else Errors(Result);
             }
             else
                 ModelState.AddModelError(" ", "User not found");
@@ -64,10 +73,10 @@ namespace Shop.API.Controllers
 
         public async Task<IActionResult> Update(string id)
         {
-            AppUser user = await _userManager.FindByIdAsync(id);
-            if (user != null) 
+            AppUser User = await _userManager.FindByIdAsync(id);
+            if (User != null) 
             {
-                return View(user);
+                return View(User);
             }
             else return RedirectToAction("Index");
         }
@@ -75,26 +84,39 @@ namespace Shop.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(string id, string email, string password)
         {
-            AppUser user = await _userManager.FindByIdAsync(id);
-            if (user != null)
-            {               
+            AppUser User = await _userManager.FindByIdAsync(id);
+            if (User != null)
+            {
+                IdentityResult ValidEmial = null;
                 if (!string.IsNullOrEmpty(email))
-                    user.Email = email;
+                {
+                    ValidEmial = await _emailValidator.ValidateAsync(_userManager, User);
+                    if (ValidEmial.Succeeded)
+                        User.Email = email;
+                    else Errors(ValidEmial);
+                }
                 else ModelState.AddModelError(" ", "Email can't be empty");
-
+                
+                IdentityResult ValidPassword = null;
                 if (!string.IsNullOrEmpty(password))
-                    user.PasswordHash = _passwordHasher.HashPassword(user, password);
+                {
+                    ValidPassword = await _passwordValidator.ValidateAsync(_userManager, User, password);
+                    if (ValidPassword.Succeeded)
+                        User.PasswordHash = _passwordHasher.HashPassword(User, password);
+                    else Errors(ValidPassword);
+                }
                 else ModelState.AddModelError(" ", "Password can't be empty");
+                
                 if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password))
                 {
-                    IdentityResult result = await _userManager.UpdateAsync(user);
-                    if (result.Succeeded)
+                    IdentityResult Result = await _userManager.UpdateAsync(User);
+                    if (Result.Succeeded)
                         return RedirectToAction("Index");
-                    else Errors(result);
+                    else Errors(Result);
                 }               
             }
             else ModelState.AddModelError(" ", "User not found");
-            return View(user);
+            return View(User);
         }
 
         private void Errors(IdentityResult result)

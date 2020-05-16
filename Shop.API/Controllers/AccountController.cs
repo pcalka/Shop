@@ -50,5 +50,11 @@ namespace Shop.API.Controllers
             }
             return View(login);
         }
+
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return View("Index", "Product");
+        }
     }
 }

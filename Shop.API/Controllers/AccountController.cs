@@ -56,5 +56,20 @@ namespace Shop.API.Controllers
             await _signInManager.SignOutAsync();
             return View("Index", "Product");
         }
+
+        public IActionResult Register()
+        {
+            return View(new User());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(AppUser user)
+        {
+            if (ModelState.IsValid)
+            {
+                await _userManager.CreateAsync(user);
+            }
+            return View(user);
+        }
     }
 }

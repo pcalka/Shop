@@ -59,15 +59,20 @@ namespace Shop.API.Controllers
 
         public IActionResult Register()
         {
-            return View(new User());
+            return View(new AppUser());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(AppUser user)
+        public async Task<IActionResult> Register(User user)
         {
             if (ModelState.IsValid)
             {
-                await _userManager.CreateAsync(user);
+                AppUser NewUser = new AppUser() { UserName = user.Name };
+                IdentityResult result = await _userManager.CreateAsync(NewUser, user.Password);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Product");
+                }
             }
             return View(user);
         }

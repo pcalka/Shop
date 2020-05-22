@@ -57,12 +57,14 @@ namespace Shop.API.Controllers
             return View("Index", "Product");
         }
 
+        [AllowAnonymous]
         public IActionResult Register()
         {
-            return View(new AppUser());
+            return View(new User());
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(User user)
         {
             if (ModelState.IsValid)

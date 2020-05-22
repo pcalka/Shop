@@ -4,8 +4,7 @@
     <a asp-action="Login" asp-controller="Account">Login</a>
 </h2>
 
-<form asp-action="Registration" asp-controller="Account" method="post" class="form-horizontal" role="form">
-
+<form asp-action="Register" asp-controller="Account" method="post" class="form-horizontal" role="form">
     <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="form-group">
@@ -24,7 +23,6 @@
         </div>
     </div>
 
-
     <div class="form-group">
         <label asp-for="Password" class="col-md-2 control-label">Password</label>
         <div class="col-md-10">
@@ -35,7 +33,7 @@
 
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-primary" value="Registration" />
+            <input type="submit" class="btn btn-primary" value="Register" />
         </div>
     </div>
 </form>

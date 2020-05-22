@@ -69,11 +69,26 @@ namespace Shop.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                AppUser NewUser = new AppUser() { UserName = user.Name };
-                IdentityResult result = await _userManager.CreateAsync(NewUser, user.Password);
-                if (result.Succeeded)
+                AppUser NewUser = new AppUser();
+                if (!string.IsNullOrEmpty(user.Name))
+                {
+                    NewUser.UserName = user.Name;
+                }
+                if (!string.IsNullOrEmpty(user.Email))
+                {
+                    NewUser.Email = user.Email;
+                }
+                IdentityResult Result = await _userManager.CreateAsync(NewUser, user.Password);
+                if (Result.Succeeded)
                 {
                     return RedirectToAction("Index", "Product");
+                }
+                else
+                {
+                    foreach (var error in Result.Errors)
+                    {
+                        ModelState.AddModelError(" ", error.Description);
+                    }
                 }
             }
             return View(user);

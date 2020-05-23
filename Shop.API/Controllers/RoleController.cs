@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,14 +21,32 @@ namespace Shop.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(name));
-                if (result.Succeeded)
+                IdentityResult Result = await _roleManager.CreateAsync(new IdentityRole(name));
+                if (Result.Succeeded)
                     return RedirectToAction("Index");
                 else
-                    Errors(result);
+                    Errors(Result);
             }
             return View(name);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id)
+        {
+            IdentityRole Role = await _roleManager.FindByIdAsync(id);
+            if (Role != null)
+            {
+                IdentityResult Result = await _roleManager.DeleteAsync(Role);
+                if (Result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                else Errors(Result);
+            }
+            else ModelState.AddModelError("", "Role not found");
+            return View("Index", _roleManager.Roles);
+        }
+
 
         private void Errors(IdentityResult result)
         {

@@ -14,7 +14,7 @@ namespace Shop.API.Controllers
         }
         public ViewResult Index() => View(_roleManager.Roles);
 
-        public IActionResult Crate() => View();
+        public IActionResult Create() => View();
 
         [HttpPost]
         public async Task<IActionResult> Create([Required] string name)
@@ -46,7 +46,6 @@ namespace Shop.API.Controllers
             else ModelState.AddModelError("", "Role not found");
             return View("Index", _roleManager.Roles);
         }
-
 
         private void Errors(IdentityResult result)
         {

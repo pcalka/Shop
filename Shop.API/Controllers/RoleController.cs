@@ -76,6 +76,38 @@ namespace Shop.API.Controllers
             return View("Index", _roleManager.Roles);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Update(RoleModification role)
+        {
+            IdentityResult result;
+            if (ModelState.IsValid)
+            {
+                foreach (string userId in role.AddIds ?? new string[] { })  
+                {
+                    AppUser user = await _userManager.FindByIdAsync(userId);
+                    if (user != null)
+                    {
+                        result = await _userManager.AddToRoleAsync(user, role.RoleName);
+                        if (!result.Succeeded)
+                            Errors(result);
+                    }
+                }
+                foreach (string userId in role.DeleteIds ?? new string[] { })
+                {
+                    AppUser user = await _userManager.FindByIdAsync(userId);
+                    if(user != null)
+                    {
+                        result = await _userManager.RemoveFromRoleAsync(user, role.RoleName);
+                        if (!result.Succeeded)
+                            Errors(result);
+                    }
+                }               
+            }
+            if (ModelState.IsValid)
+                return RedirectToAction("Index");
+            else return await Update(role.RoleId);
+        }
+
         private void Errors(IdentityResult result)
         {
             foreach (IdentityError error in result.Errors)

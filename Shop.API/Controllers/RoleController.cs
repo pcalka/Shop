@@ -1,16 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Shop.API.Models;
 
 namespace Shop.API.Controllers
 {
     public class RoleController : Controller
     {
         private RoleManager<IdentityRole> _roleManager;
-        public RoleController(RoleManager<IdentityRole> roleManager)
+        private UserManager<AppUser> _userManager;
+        public RoleController(RoleManager<IdentityRole> roleManager,
+            UserManager<AppUser> userManager)
         {
             _roleManager = roleManager;
+            _userManager = userManager;
         }
         public ViewResult Index() => View(_roleManager.Roles);
 
@@ -44,6 +49,30 @@ namespace Shop.API.Controllers
                 else Errors(Result);
             }
             else ModelState.AddModelError("", "Role not found");
+            return View("Index", _roleManager.Roles);
+        }
+
+        public async Task<IActionResult> Update(string id)
+        {
+            IdentityRole Role = await _roleManager.FindByIdAsync(id);
+            if (Role != null)
+            {
+                List<AppUser> Members = new List<AppUser>();
+                List<AppUser> NonMembers = new List<AppUser>();
+                foreach (AppUser user in _userManager.Users)
+                {
+                    List<AppUser> List = await _userManager.IsInRoleAsync(user, Role.Name)
+                        ? Members : NonMembers;
+                    List.Add(user);
+                }
+                return View(new RoleEdit 
+                {
+                    Role = Role,
+                    Members = Members,
+                    NonMembers = NonMembers
+                });
+            }
+            else ModelState.AddModelError("","Role not found");
             return View("Index", _roleManager.Roles);
         }
 

@@ -54,7 +54,7 @@ namespace Shop.API.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return View("Index", "Product");
+            return RedirectToAction("Index", "Product");
         }
 
         [AllowAnonymous]

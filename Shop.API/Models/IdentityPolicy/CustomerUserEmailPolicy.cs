@@ -13,11 +13,11 @@ namespace Shop.API.Models.IdentityPolicy
             IdentityResult result = await base.ValidateAsync(userManager, user);
             List<IdentityError> errors = result.Succeeded ?
                 new List<IdentityError>() : result.Errors.ToList();
-            if (!user.Email.ToLower().EndsWith("@yahoo.com"))
+            if (!user.Email.ToLower().EndsWith("@example.com"))
             {
                 errors.Add(new IdentityError
                 {
-                    Description = "Only yahoo.com email addresses are allowed"
+                    Description = "Only example.com email addresses are allowed."
                 });
             }
             return errors.Count == 0 ? IdentityResult.Success : 

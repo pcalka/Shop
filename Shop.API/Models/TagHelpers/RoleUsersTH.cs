@@ -25,7 +25,7 @@ namespace Shop.API.Models.TagHelpers
         {
             List<string> Names = new List<string>();
             IdentityRole RoleResult = await _roleManager.FindByIdAsync(Role);
-            if(Role != null)
+            if(RoleResult != null)
             {
                 foreach(var user in _userManager.Users)
                 {

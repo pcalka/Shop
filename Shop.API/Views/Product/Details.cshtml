@@ -5,4 +5,12 @@
 
 <h3>@Model.Name</h3>
 <p>Price @Model.Price$</p>
+<p>@Model.Descrption</p>>
+<div>
+    @foreach (var photo in Model.PhotoUrl)
+    {
+        <img src="photo" alt="@Model.Name"/>
+    }
+    
+</div>
 

@@ -1,26 +1,27 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<AppUser> SignInManager
 
-
-@if (SignInManager.IsSignedIn(User))
-{
-    <form asp-controller="Account" asp-action="Logout" id="logoutForm" method="post"
-          class="nav navbar-right">
-        <ul class="nav navbar-right">
-            <li>
-                <a href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
-            </li>
-        </ul>
-    </form>
-}
-else
-{
-    <ul class="nav navbar-nav">
-        <li>
-            <a id="registerLink" asp-controller="Account" asp-action="Login">Login</a>
-        </li>
-        <li>
-            <a id="loginLink" asp-controller="Account" asp-action="Register">Register</a>
-        </li>
-    </ul>
-}
+    <div class="nav navbar-right">
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <form asp-controller="Account" asp-action="Logout" id="logoutForm" method="post"
+                  class="nav navbar-right">
+                <ul class="nav navbar-right">
+                    <li>
+                        <a href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
+                    </li>
+                </ul>
+            </form>
+        }
+        else
+        {
+            <ul class="nav navbar-nav">
+                <li>
+                    <a class="navbar-brand" id="registerLink" asp-controller="Account" asp-action="Login">Login</a>
+                </li>
+                <li>
+                    <a class="navbar-brand" id="loginLink" asp-controller="Account" asp-action="Register">Register</a>
+                </li>
+            </ul>
+        }
+    </div>

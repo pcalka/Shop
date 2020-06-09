@@ -8,6 +8,7 @@ namespace Shop.API.Models
         void DeleteProduct(Product product);
         void EditProduct(Product product);
         IEnumerable<Product> GetAllProducts();
+        IEnumerable<Product> GetAllFavoritesProducts();
         Product GetProductById(int Id);       
     }
 }

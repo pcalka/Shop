@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Shop.API.Models
 {
@@ -25,6 +26,12 @@ namespace Shop.API.Models
         public IEnumerable<Product> GetAllProducts()
         {
             return _context.Products;
+        }
+
+        public IEnumerable<Product> GetAllFavoritesProducts()
+        {
+            var FavoritesProductsList = _context.Products.Where(x => x.IsFavourite == true).ToList();
+            return FavoritesProductsList;
         }
 
         public Product GetProductById(int id)

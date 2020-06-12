@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Shop.API.Models
 {
@@ -11,39 +12,51 @@ namespace Shop.API.Models
             _context = context;
         }
 
-        public void AddProduct(Product product)
+        public async Task AddProduct(Product product)
         {
-            _context.Products.Add(product);
-            _context.SaveChanges();
+            await _context.Products.AddAsync(product);
+            await _context.SaveChangesAsync();
         }
 
-        public void DeleteProduct(Product product)
-        {
+        public async Task DeleteProduct(Product product)
+        {    
             _context.Products.Remove(product);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public IEnumerable<Product> GetAllProducts()
+        public async Task EditProduct(Product product)
+        {
+            _context.Products.Update(product);
+            await _context.SaveChangesAsync();
+        }
+
+        
+
+        public async Task<IEnumerable<Product>> GetAllProducts()
         {
             return _context.Products;
         }
 
-        public IEnumerable<Product> GetAllFavoritesProducts()
+        public async Task<Product> GetProductById(int id)
         {
-            var FavoritesProductsList = _context.Products.Where(x => x.IsFavourite == true).ToList();
-            return FavoritesProductsList;
-        }
-
-        public Product GetProductById(int id)
-        {
-            var ProductFound = _context.Products.Find(id);
+            Product ProductFound = await _context.Products.FindAsync(id);
             return ProductFound;
         }
 
-        public void EditProduct(Product product)
+        public async Task<IEnumerable<Product>> GetAllFavoritesProducts()
         {
-            _context.Products.Update(product);
-            _context.SaveChanges();
+            List<Product> FavoritesProductsList = _context.Products.Where(x => x.IsFavourite == true).ToList();
+            return FavoritesProductsList;
+        } 
+
+        public async Task MarkingFavourite(int id)
+        {
+            var ProductFound = await _context.Products.FindAsync(id);
+            if (ProductFound.IsFavourite == false)
+            {
+                ProductFound.IsFavourite = true;
+            }
+            else ProductFound.IsFavourite = false;
         }
     }
 }

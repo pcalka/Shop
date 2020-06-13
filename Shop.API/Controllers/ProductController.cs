@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shop.API.Models;
+using System.Threading.Tasks;
 
 namespace Shop.API.Controllers
 {
@@ -16,21 +18,20 @@ namespace Shop.API.Controllers
             return View();
         }
 
-
         [HttpPost]
-        public IActionResult Create(Product product)
+        public async Task<IActionResult> Create(Product product)
         {
             if (ModelState.IsValid)
             {
-                _productRepository.AddProduct(product);
+                await _productRepository.AddProduct(product);
                 return RedirectToAction("Index");
             }
             return View(product);
         }
       
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            Product ProductFound = _productRepository.GetProductById(id);
+            Product ProductFound = await _productRepository.GetProductById(id);
             if (ModelState.IsValid)
             {
                 return View(ProductFound);
@@ -38,9 +39,9 @@ namespace Shop.API.Controllers
             return NotFound();
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            Product ProductFound = _productRepository.GetProductById(id);
+            Product ProductFound = await _productRepository.GetProductById(id);
             if (ProductFound == null)
             return NotFound();
             
@@ -49,35 +50,40 @@ namespace Shop.API.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult ConfirmDelete(int id)
+        public async Task<IActionResult> ConfirmDelete(int id)
         {             
-           Product product = _productRepository.GetProductById(id);
-           _productRepository.DeleteProduct(product);
+           Product product = await _productRepository.GetProductById(id);
+           await _productRepository.DeleteProduct(product);
            return RedirectToAction(nameof(Index));       
         }
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            Product product = _productRepository.GetProductById(id);
+            Product product = await _productRepository.GetProductById(id);
             if (product == null) NotFound();
             return View(product);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Product product)
+        public async Task<IActionResult> Edit(Product product)
         {
             if (ModelState.IsValid)
             {
-                _productRepository.EditProduct(product);
+                await _productRepository.EditProduct(product);
                 return RedirectToAction("Index");
             }
             else return View(product);
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Favourites()
         {
-            return View(_productRepository.GetAllProducts());
+            return View(await _productRepository.GetAllFavoritesProducts());
         }
+
+        public async Task<IActionResult> Index()
+        {
+            return View(await _productRepository.GetAllProducts());
+        }     
     }
 }

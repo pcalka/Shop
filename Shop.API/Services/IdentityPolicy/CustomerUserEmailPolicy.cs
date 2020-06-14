@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Shop.API.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Shop.API.Models.IdentityPolicy
+namespace Shop.API.Services.IdentityPolicy
 {
     public class CustomerUserEmialPolicy : UserValidator<AppUser>
     {

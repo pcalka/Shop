@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Shop.API.Models;
 using Microsoft.AspNetCore.Identity;
-using Shop.API.Models.IdentityPolicy;
+using Shop.API.Services.IdentityPolicy;
 
 namespace Shop.API
 {

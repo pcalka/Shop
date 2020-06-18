@@ -30,11 +30,9 @@ namespace Shop.API.Models
             await _context.SaveChangesAsync();
         }
 
-        
-
         public async Task<IEnumerable<Product>> GetAllProducts()
         {
-            return _context.Products;
+            return await Task.FromResult(_context.Products.ToList());
         }
 
         public async Task<Product> GetProductById(int id)
@@ -43,10 +41,10 @@ namespace Shop.API.Models
             return ProductFound;
         }
 
-        public async Task<IEnumerable<Product>> GetAllFavoritesProducts()
+        public Task<IEnumerable<Product>> GetAllFavoritesProducts()
         {
-            List<Product> FavoritesProductsList = _context.Products.Where(x => x.IsFavourite == true).ToList();
-            return FavoritesProductsList;
+            IEnumerable<Product> FavoritesProductsList = _context.Products.Where(x => x.IsFavourite == true).ToList();
+            return Task.FromResult(FavoritesProductsList);
         } 
 
         public async Task MarkingFavourite(int id)

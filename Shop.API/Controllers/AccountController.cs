@@ -17,9 +17,15 @@ namespace Shop.API.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
         }
-        public IActionResult Index()
+
+        public IActionResult AccessDenied()
         {
             return View();
+        }
+
+        public IActionResult Index()
+        {
+            return View(ViewBag.AppUser);
         }
         
         [AllowAnonymous]
@@ -38,12 +44,13 @@ namespace Shop.API.Controllers
             if (ModelState.IsValid)
             {
                 AppUser User = await _userManager.FindByEmailAsync(login.Email);
+                ViewBag.AppUser = User;
                 if (User != null)
                 {
                     await _signInManager.SignOutAsync();
                     Microsoft.AspNetCore.Identity.SignInResult result = 
-                    await _signInManager.PasswordSignInAsync(User, login.Password, false, false);
-                    if (result.Succeeded)
+                    await _signInManager.PasswordSignInAsync(User, login.Password, false, false);                
+                    if (result.Succeeded)                   
                         return Redirect(login.ReturnUrl ?? "/");
                 }
                 ModelState.AddModelError(nameof(login.Email), "Login failed: Invalid eamail or password ");
